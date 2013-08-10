@@ -59,6 +59,14 @@ func (p Page) Offset() int {
 	return offset
 }
 
+// Returns the 1-based index of the first object on the page,
+// relative to all of the objects in the paginator’s list.
+// For example, when paginating a list of 5 objects with 2
+// objects per page, the second page’s start_index() would return 3.
+func (p Page) StartIndex() int {
+	return p.Offset() + 1
+}
+
 // number of items on the Page
 func (p Page) NumItems() int {
 	total_items := p.Paginator.Count()

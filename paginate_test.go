@@ -61,4 +61,8 @@ func Test_Page(t *testing.T) {
 		t.Error("single page should not have a next")
 	}
 
+	if page.StartIndex() != 1 {
+		t.Error("wrong StartIndex")
+	}
+
 }
