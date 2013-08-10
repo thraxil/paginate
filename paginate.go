@@ -38,6 +38,11 @@ func (p Paginator) Count() int {
 	return p.ItemList.TotalItems()
 }
 
+// return the total number of pages
+func (p Paginator) NumPages() int {
+	return int(math.Ceil(float64(p.ItemList.TotalItems()) / float64(p.PerPage)))
+}
+
 type Page struct {
 	Paginator  Paginator
 	PageNumber int

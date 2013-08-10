@@ -28,6 +28,10 @@ func Test_Count(t *testing.T) {
 	if p.Count() != len(itemset.Stuff) {
 		t.Error("wrong count")
 	}
+
+	if p.NumPages() != 1 {
+		t.Error("wrong number of pages")
+	}
 }
 
 func Test_Page(t *testing.T) {
@@ -68,6 +72,5 @@ func Test_Page(t *testing.T) {
 	if page.EndIndex() != 3 {
 		t.Error("wrong EndIndex")
 	}
-
 
 }
