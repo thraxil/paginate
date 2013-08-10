@@ -67,6 +67,14 @@ func (p Page) StartIndex() int {
 	return p.Offset() + 1
 }
 
+// Returns the 1-based index of the last object on the page,
+// relative to all of the objects in the paginator’s list.
+// For example, when paginating a list of 5 objects with 2
+//  objects per page, the second page’s end_index() would return 4.
+func (p Page) EndIndex() int {
+	return p.Offset() + p.NumItems()
+}
+
 // number of items on the Page
 func (p Page) NumItems() int {
 	total_items := p.Paginator.Count()

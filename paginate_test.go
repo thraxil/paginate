@@ -65,4 +65,9 @@ func Test_Page(t *testing.T) {
 		t.Error("wrong StartIndex")
 	}
 
+	if page.EndIndex() != 3 {
+		t.Error("wrong EndIndex")
+	}
+
+
 }
