@@ -32,6 +32,11 @@ func Test_Count(t *testing.T) {
 	if p.NumPages() != 1 {
 		t.Error("wrong number of pages")
 	}
+
+	var s = []int{1}
+	if len(p.PageRange()) != len(s) {
+		t.Error("wrong page range")
+	}
 }
 
 func Test_Page(t *testing.T) {

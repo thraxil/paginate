@@ -43,6 +43,16 @@ func (p Paginator) NumPages() int {
 	return int(math.Ceil(float64(p.ItemList.TotalItems()) / float64(p.PerPage)))
 }
 
+// A 1-based range of page numbers, e.g., [1, 2, 3, 4].
+func (p Paginator) PageRange() []int {
+	n := p.NumPages()
+	out := make([]int, n)
+	for i := 1; i <= n; i++ {
+		out[i-1] = i
+	}
+	return out
+}
+
 type Page struct {
 	Paginator  Paginator
 	PageNumber int
