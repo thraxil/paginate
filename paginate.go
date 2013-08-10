@@ -6,23 +6,19 @@ import (
 	"strconv"
 )
 
-func minint(a, b int) int {
-	return int(math.Min(float64(a), float64(b)))
-}
-
-func maxint(a, b int) int {
-	return int(math.Max(float64(a), float64(b)))
-}
-
 type Paginator struct {
 	ItemList Pagable
 	PerPage  int
 }
 
+// make a new Paginator from a collection of items and number of
+// items per page
 func NewPaginator(itemset Pagable, pp int) *Paginator {
 	return &Paginator{ItemList: itemset, PerPage: pp}
 }
 
+// get a Page from an HTTP request. For now, it's hard
+// coded to expect a 'page' parameter
 func (p Paginator) GetPage(r *http.Request) Page {
 	pagen, err := strconv.Atoi(r.FormValue("page"))
 	if err != nil {
@@ -32,10 +28,12 @@ func (p Paginator) GetPage(r *http.Request) Page {
 	return p.GetPageNumber(pagen)
 }
 
+// get a Page by number
 func (p Paginator) GetPageNumber(n int) Page {
 	return Page{Paginator: p, PageNumber: n}
 }
 
+// total number of items
 func (p Paginator) Count() int {
 	return p.ItemList.TotalItems()
 }
@@ -45,10 +43,13 @@ type Page struct {
 	PageNumber int
 }
 
+// return the items on the page. Returns them as a slice
+// of interface{}, so you'll need to cast them back
 func (p Page) Items() []interface{} {
 	return p.Paginator.ItemList.ItemRange(p.Offset(), p.NumItems())
 }
 
+// starting offset for items on the Page
 func (p Page) Offset() int {
 	total_items := p.Paginator.Count()
 	offset := (p.PageNumber - 1) * p.Paginator.PerPage
@@ -58,6 +59,7 @@ func (p Page) Offset() int {
 	return offset
 }
 
+// number of items on the Page
 func (p Page) NumItems() int {
 	total_items := p.Paginator.Count()
 	cnt := p.Paginator.PerPage
@@ -67,19 +69,24 @@ func (p Page) NumItems() int {
 	return minint(p.Paginator.PerPage, cnt)
 }
 
+// page number for the page before this
+// bottoms out at the first page
 func (p Page) PrevPage() int {
 	return maxint(p.PageNumber-1, 1)
 }
 
+// does this Page have one before it?
 func (p Page) HasPrev() bool {
 	return p.PageNumber > 1
 }
 
+// page number for the next page. won't go past the end
 func (p Page) NextPage() int {
 	total_items := p.Paginator.Count()
 	return minint(p.PageNumber+1, int(total_items/p.Paginator.PerPage)+1)
 }
 
+// is there a page after this one?
 func (p Page) HasNext() bool {
 	total_items := p.Paginator.Count()
 	return p.Offset() < (total_items - p.Paginator.PerPage)
@@ -88,4 +95,12 @@ func (p Page) HasNext() bool {
 type Pagable interface {
 	TotalItems() int
 	ItemRange(offset, count int) []interface{}
+}
+
+func minint(a, b int) int {
+	return int(math.Min(float64(a), float64(b)))
+}
+
+func maxint(a, b int) int {
+	return int(math.Max(float64(a), float64(b)))
 }
