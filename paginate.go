@@ -123,6 +123,11 @@ func (p Page) HasNext() bool {
 	return p.Offset() < (total_items - p.Paginator.PerPage)
 }
 
+// are there any other pages or is this the only one?
+func (p Page) HasOtherPages() bool {
+	return p.HasPrev() || p.HasNext()
+}
+
 type Pagable interface {
 	TotalItems() int
 	ItemRange(offset, count int) []interface{}
