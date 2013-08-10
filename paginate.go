@@ -19,13 +19,21 @@ type Paginator struct {
 	PerPage  int
 }
 
+func NewPaginator(itemset Pagable, pp int) *Paginator {
+	return &Paginator{ItemList: itemset, PerPage: pp}
+}
+
 func (p Paginator) GetPage(r *http.Request) Page {
 	pagen, err := strconv.Atoi(r.FormValue("page"))
 	if err != nil {
 		// can't parse as int? just default to one
 		pagen = 1
 	}
-	return Page{Paginator: p, PageNumber: pagen}
+	return p.GetPageNumber(pagen)
+}
+
+func (p Paginator) GetPageNumber(n int) Page {
+	return Page{Paginator: p, PageNumber: n}
 }
 
 func (p Paginator) Count() int {
