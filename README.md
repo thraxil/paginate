@@ -33,9 +33,9 @@ The usual:
     func (i items) ItemRange(offset, count int) []interface{} {
         out := make([]interface{}, len(i.Stuff))
         for j, v := range i.Stuff {
-        out[j] = v
-    }
-    return out[offset : offset+count]
+            out[j] = v
+        }
+        return out[offset : offset+count]
     }
     
     var itemset = items{Stuff: []int{1, 2, 3}}
