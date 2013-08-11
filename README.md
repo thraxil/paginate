@@ -77,7 +77,11 @@ is your responsibility to make use of `.HasPrevPage()` to make the
 interface clean for users.
 
 See the [API
-documentation](http://godoc.org/github.com/thraxil/paginate) for more details.
+documentation](http://godoc.org/github.com/thraxil/paginate) for more
+details.
+
+Look in `paginate_test.go` for an example session translating the full
+example code from the Django documentation to the Go equivalent.
 
 Another small thing to note is that the `Paginator.GetPage()` function
 takes an `http/request`, looks for a `page` parameter, and gives you
