@@ -78,3 +78,7 @@ interface clean for users.
 
 See the [API
 documentation](http://godoc.org/github.com/thraxil/paginate) for more details.
+
+Another small thing to note is that the `Paginator.GetPage()` function
+takes an `http/request`, looks for a `page` parameter, and gives you
+that page. I find that convenient.
