@@ -83,3 +83,141 @@ func Test_Page(t *testing.T) {
 	}
 
 }
+
+type Beatles []string
+
+func (b Beatles) TotalItems() int {
+	return len(b)
+}
+
+func (b Beatles) ItemRange(offset, count int) []interface{} {
+	out := make([]interface{}, len(b))
+	for j, v := range b {
+		out[j] = v
+	}
+	return out[offset : offset+count]
+}
+
+// duplicate the example code from Django's paginator
+// and use that as a nice set of tests.
+func Test_DjangoExamples(t *testing.T) {
+	// >>> from django.core.paginator import Paginator
+	// >>> objects = ['john', 'paul', 'george', 'ringo']
+	var objects = Beatles{"john", "paul", "george", "ringo"}
+
+	// >>> p = Paginator(objects, 2)
+	p := NewPaginator(objects, 2)
+
+	// >>> p.count
+	// 4
+	if p.Count() != 4 {
+		t.Error("count is off")
+	}
+
+	// >>> p.num_pages
+	// 2
+	if p.NumPages() != 2 {
+		t.Error("wrong number of pages")
+	}
+
+	// >>> p.page_range
+	// [1, 2]
+	if len(p.PageRange()) != 2 {
+		t.Error("wrong page range")
+	}
+
+	// >>> page1 = p.page(1)
+	// >>> page1
+	// <Page 1 of 2>
+	// >>> page1.object_list
+	// ['john', 'paul']
+	page1 := p.GetPageNumber(1)
+	p1_items := page1.Items()
+	if len(p1_items) != 2 {
+		t.Error("wrong number of items on first page")
+	}
+	if p1_items[0].(string) != "john" {
+		t.Error("not john")
+	}
+	if p1_items[1].(string) != "paul" {
+		t.Error("not paul")
+	}
+
+	// >>> page2 = p.page(2)
+	// >>> page2.object_list
+	// ['george', 'ringo']
+	page2 := p.GetPageNumber(2)
+	p2_items := page2.Items()
+	if len(p2_items) != 2 {
+		t.Error("wrong number of items on second page")
+	}
+	if p2_items[0].(string) != "george" {
+		t.Error("not george")
+	}
+	if p2_items[1].(string) != "ringo" {
+		t.Error("not ringo")
+	}
+
+	// >>> page2.has_next()
+	// False
+	if page2.HasNext() {
+		t.Error("page 2 is the last")
+	}
+
+	// >>> page2.has_previous()
+	// True
+	if !page2.HasPrev() {
+		t.Error("there should be a previous page though")
+	}
+
+	// >>> page2.has_other_pages()
+	// True
+	if !page2.HasOtherPages() {
+		t.Error("there should be other pages")
+	}
+
+	// >>> page2.next_page_number()
+	// Traceback (most recent call last):
+	// ...
+	// EmptyPage: That page contains no results
+
+	// instead of raising exceptions, let's just have the Go
+	// version return the reasonable thing. Use .HasNext()
+	// to test.
+	if page2.NextPage() != 2 {
+		t.Error("limit it to two pages")
+	}
+
+	// >>> page2.previous_page_number()
+	// 1
+	if page2.PrevPage() != 1 {
+		t.Error("wrong prev page")
+	}
+
+	// >>> page2.start_index() # The 1-based index of the first item on this page
+	// 3
+	if page2.StartIndex() != 3 {
+		t.Error("wrong start index")
+	}
+
+	// >>> page2.end_index() # The 1-based index of the last item on this page
+	// 4
+	if page2.EndIndex() != 4 {
+		t.Error("wrong end index")
+	}
+
+	// haven't yet decided what we should do
+	// when asked for invalid page numbers
+	// django's approach is to raise exceptions:
+
+	// >>> p.page(0)
+	// Traceback (most recent call last):
+	// ...
+	// EmptyPage: That page number is less than 1
+
+	// >>> p.page(3)
+	// Traceback (most recent call last):
+	// ...
+	// EmptyPage: That page contains no results
+
+}

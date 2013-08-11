@@ -94,7 +94,7 @@ func (p Page) EndIndex() int {
 func (p Page) NumItems() int {
 	total_items := p.Paginator.Count()
 	cnt := p.Paginator.PerPage
-	if p.Offset() >= (total_items - p.Paginator.PerPage) {
+	if p.Offset() > (total_items - p.Paginator.PerPage) {
 		cnt = total_items % p.Paginator.PerPage
 	}
 	return minint(p.Paginator.PerPage, cnt)
@@ -113,8 +113,7 @@ func (p Page) HasPrev() bool {
 
 // page number for the next page. won't go past the end
 func (p Page) NextPage() int {
-	total_items := p.Paginator.Count()
-	return minint(p.PageNumber+1, int(total_items/p.Paginator.PerPage)+1)
+	return minint(p.PageNumber+1, p.Paginator.NumPages())
 }
 
 // is there a page after this one?
