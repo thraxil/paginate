@@ -63,3 +63,18 @@ strong typing and lack of generics. The .Items() method has to return
 item type back. Similarly, your .ItemRange() method has to convert
 your items to `[]interface{}`. If anyone has a better idea for how
 to do pagination on a generic collection in Go, I'm all ears.
+
+The other difference is that Django's paginator handles some things by
+raising exceptions. Eg, if you ask for a page that doesn't exist. Go,
+of course doesn't have exceptions, and the idiomatic Go approach of
+returning a (value, error) pair doesn't really work well if you are
+working with the paginator in a template (which is a pretty key
+use-case). I think the most reasonable thing for the Go version to do
+is to try to always return something valid, and to provide functions
+to validate the inputs. So, eg, `.PrevPage()` called on the first page
+will just give you `1` instead of trying to send you to a `0` page. It
+is your responsibility to make use of `.HasPrevPage()` to make the
+interface clean for users.
+
+See the [API
+documentation](http://godoc.org/github.com/thraxil/paginate) for more details.

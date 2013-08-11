@@ -30,6 +30,9 @@ func (p Paginator) GetPage(r *http.Request) Page {
 
 // get a Page by number
 func (p Paginator) GetPageNumber(n int) Page {
+	// limit it to a valid page
+	n = minint(n, p.NumPages())
+	n = maxint(n, 1)
 	return Page{Paginator: p, PageNumber: n}
 }
 
@@ -127,6 +130,8 @@ func (p Page) HasOtherPages() bool {
 	return p.HasPrev() || p.HasNext()
 }
 
+// the interface that your collection must implement
+// in order to be paginated
 type Pagable interface {
 	TotalItems() int
 	ItemRange(offset, count int) []interface{}

@@ -215,9 +215,19 @@ func Test_DjangoExamples(t *testing.T) {
 	// ...
 	// EmptyPage: That page number is less than 1
 
+	page0 := p.GetPageNumber(0)
+	if page0.PageNumber != 1 {
+		t.Error("invalid page number")
+	}
+
 	// >>> p.page(3)
 	// Traceback (most recent call last):
 	// ...
 	// EmptyPage: That page contains no results
+
+	page3 := p.GetPageNumber(3)
+	if page3.PageNumber != 2 {
+		t.Error("invalid page number")
+	}
 
 }
